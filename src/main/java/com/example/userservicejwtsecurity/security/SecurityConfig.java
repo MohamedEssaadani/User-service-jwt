@@ -1,6 +1,6 @@
 package com.example.userservicejwtsecurity.security;
 
-import com.example.userservicejwtsecurity.filter.CustomAuthenticationFilter;
+import com.example.userservicejwtsecurity.filter.JWTAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -38,11 +38,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        http.authorizeRequests().antMatchers("/login/**").permitAll();
+        http.authorizeRequests().antMatchers("/login/**", "/api/token/refresh/**").permitAll();
 
         // Deny access to routes
 
-        http.addFilter(new CustomAuthenticationFilter(authenticationManagerBean()));
+        http.addFilter(new JWTAuthenticationFilter(authenticationManagerBean()));
     }
 
 
