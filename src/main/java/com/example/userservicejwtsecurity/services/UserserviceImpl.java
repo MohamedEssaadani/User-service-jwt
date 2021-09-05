@@ -5,12 +5,16 @@ import com.example.userservicejwtsecurity.entities.AppUser;
 import com.example.userservicejwtsecurity.repositories.RoleRepository;
 import com.example.userservicejwtsecurity.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
@@ -53,7 +57,18 @@ public class UserserviceImpl implements Userservice, UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
-        return null;
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        AppUser user = getUserByUserName(username);
+
+        if(user == null)
+            throw new UsernameNotFoundException("User not found");
+
+        Collection<GrantedAuthority> authorities = new ArrayList<>();
+        user.getRoles()
+                .forEach(role -> {
+                    authorities.add(new SimpleGrantedAuthority(role.getRoleName()));
+                });
+
+        return new org.springframework.security.core.userdetails.User(user.getUserName(), user.getPassword(), authorities);
     }
 }
