@@ -5,6 +5,9 @@ import com.example.userservicejwtsecurity.entities.AppUser;
 import com.example.userservicejwtsecurity.repositories.RoleRepository;
 import com.example.userservicejwtsecurity.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,7 +17,7 @@ import java.util.UUID;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class UserserviceImpl implements Userservice {
+public class UserserviceImpl implements Userservice, UserDetailsService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
 
@@ -47,5 +50,10 @@ public class UserserviceImpl implements Userservice {
     @Override
     public List<AppUser> getAllUsers() {
         return userRepository.findAll();
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
+        return null;
     }
 }
